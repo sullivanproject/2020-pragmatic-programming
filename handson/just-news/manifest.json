@@ -1,0 +1,13 @@
+{
+  "manifest_version": 2,
+  "name": "just-news",
+  "version": "1.0",
+  "description": "뉴스 기사의 본문을 정돈해서 보여줍니다",
+
+  "content_scripts": [
+    {
+      "matches": ["http://mediahub.seoul.go.kr/archives/*"],
+      "js": ["app.js"]
+    }
+  ]
+}
