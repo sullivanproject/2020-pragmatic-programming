@@ -6,7 +6,10 @@
 
   "content_scripts": [
     {
-      "matches": ["http://mediahub.seoul.go.kr/archives/*"],
+      "matches": [
+        "http://mediahub.seoul.go.kr/archives/*",
+        "*://www.bloter.net/archives/*"
+      ],
       "js": ["app.js"],
       "run_at": "document_idle"
     }

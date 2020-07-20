@@ -31,20 +31,45 @@ function reconstruct(articleInfo) {
   const article = root.querySelector('article')
 
   article.append(articleInfo.content)
-  article.insertAdjacentElement('afterbegin', articleInfo.repoter)
-  article.insertAdjacentElement('afterbegin', articleInfo.timeStemp)
-  article.insertAdjacentElement('afterbegin', articleInfo.title)
+  article.insertAdjacentHTML(
+    'afterbegin',
+    `<span>${articleInfo.repoter}</span>`
+  )
+  article.insertAdjacentHTML(
+    'afterbegin',
+    `<span>${articleInfo.timeStemp}</span>`
+  )
+  article.insertAdjacentHTML('afterbegin', `<h1>${articleInfo.title}</h1>`)
   article.insertAdjacentHTML(
     'afterbegin',
     `<a href=${optOutUrl()}>원본 페이지 보기</a>`
   )
 }
 
+const sites = {
+  'mediahub.seoul.go.kr': {
+    title: '#main > h1',
+    timeStemp: '.date',
+    repoter: '.user',
+    content: '.pf-content',
+  },
+  'www.bloter.net': {
+    title: 'h1.headline',
+    timeStemp: '.publish',
+    repoter: '.author--name',
+    content: '.article--content',
+    // TODO: 컨텐츠 내부 광고 지우기
+    // contentAds: ['wp_adbn_root'],
+  },
+}
+
+const site = sites[location.hostname]
+
 const articleInfo = {
-  title: document.querySelector('#main > h1').cloneNode(true),
-  timeStemp: document.querySelector('.date').cloneNode(true),
-  repoter: document.querySelector('.user').cloneNode(true),
-  content: document.querySelector('.pf-content').cloneNode(true),
+  title: document.querySelector(site.title).innerText,
+  timeStemp: document.querySelector(site.timeStemp).innerText,
+  repoter: document.querySelector(site.repoter).innerText,
+  content: document.querySelector(site.content).cloneNode(true),
 }
 
 if (!isOptOut()) {
