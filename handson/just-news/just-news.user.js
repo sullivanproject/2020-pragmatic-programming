@@ -1,3 +1,10 @@
+// ==UserScript==
+// @name   just-news-PoC
+// @version 1
+// @match http://mediahub.seoul.go.kr/archives/*
+// @match *://www.bloter.net/archives/*
+// ==/UserScript==
+
 const optOutQueryKey = 'just_news'
 
 function isOptOut() {
@@ -72,6 +79,8 @@ const articleInfo = {
   content: document.querySelector(site.content).cloneNode(true),
 }
 
-if (!isOptOut()) {
-  reconstruct(articleInfo)
-}
+window.addEventListener('load', () => {
+  if (!isOptOut()) {
+    reconstruct(articleInfo)
+  }
+})
