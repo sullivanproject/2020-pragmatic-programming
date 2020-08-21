@@ -9,7 +9,7 @@
 
 const optOutQueryKey = 'just_news'
 
-function getUrl() {
+function optOutUrl() {
   let query = window.location.search
   if (query) {
     query += `&${optOutQueryKey}=false`
@@ -84,7 +84,7 @@ function reconstruct(articleInfo, adSelectors) {
   article.insertAdjacentHTML('afterbegin', `<h1>${articleInfo.title}</h1>`)
   article.insertAdjacentHTML(
     'afterbegin',
-    `<a href=${getUrl()}>원본 페이지 보기</a>`
+    `<a href=${optOutUrl()}>원본 페이지 보기</a>`
   )
 }
 
