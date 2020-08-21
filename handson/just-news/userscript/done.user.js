@@ -23,7 +23,7 @@ function isOptOut() {
   return window.location.search.indexOf(`${optOutQueryKey}=false`) !== -1
 }
 
-function reconstruct(articleInfo) {
+function reconstruct(articleInfo, adSelectors) {
   const root = document.createElement('html')
   document.replaceChild(root, document.documentElement)
   root.innerHTML = [
@@ -64,6 +64,15 @@ function reconstruct(articleInfo) {
   const article = root.querySelector('article')
 
   article.append(articleInfo.content)
+
+  for (const adSelector of adSelectors) {
+    const element = article.querySelector(adSelector)
+    if (element === null) {
+      console.error(`${adSelector} is null`)
+      continue
+    }
+    element.remove()
+  }
   article.insertAdjacentHTML(
     'afterbegin',
     `<p>작성자: ${articleInfo.repoter}</p>`
@@ -94,7 +103,20 @@ const sites = {
   },
 }
 
+const sitesAd = {
+  'mediahub.seoul.go.kr': [],
+  'www.bloter.net': [
+    '.article--content-ad__container',
+    '.denim-shortcode--title',
+    '.bloter-plus--article',
+    '.related-post--article',
+    '.goog-te-banner',
+    '#goog-gt-tt',
+  ],
+}
+
 const site = sites[location.hostname]
+const adSelectors = sitesAd[location.hostname]
 
 const articleInfo = {
   title: document.querySelector(site.title).innerText,
@@ -104,5 +126,5 @@ const articleInfo = {
 }
 
 if (!isOptOut()) {
-  reconstruct(articleInfo)
+  reconstruct(articleInfo, adSelectors)
 }
