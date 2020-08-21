@@ -18,6 +18,10 @@ function getUrl() {
   return window.location.origin + window.location.pathname + query
 }
 
+function isOptOut() {
+  return window.location.search.indexOf(`${optOutQueryKey}=false`) !== -1
+}
+
 function reconstruct(articleInfo) {
   const root = document.createElement('html')
   document.replaceChild(root, document.documentElement)
@@ -88,4 +92,6 @@ const articleInfo = {
   content: document.querySelector(site.content).cloneNode(true),
 }
 
-reconstruct(articleInfo)
+if (!isOptOut()) {
+  reconstruct(articleInfo)
+}

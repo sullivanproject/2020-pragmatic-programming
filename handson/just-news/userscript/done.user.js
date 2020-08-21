@@ -19,6 +19,10 @@ function getUrl() {
   return window.location.origin + window.location.pathname + query
 }
 
+function isOptOut() {
+  return window.location.search.indexOf(`${optOutQueryKey}=false`) !== -1
+}
+
 function reconstruct(articleInfo) {
   const root = document.createElement('html')
   document.replaceChild(root, document.documentElement)
@@ -75,15 +79,6 @@ function reconstruct(articleInfo) {
   )
 }
 
-function remove_ad(){
-    content_ad1.parentNode.removeChild(content_ad1)
-    ad_title.forEach(function(item){
-        item.parentNode.removeChild(item)
-    })
-    ad_article1.parentNode.removeChild(ad_article1)
-    ad_article2.parentNode.removeChild(ad_article2)
-}
-
 const sites = {
   'mediahub.seoul.go.kr': {
     title: '#main > h1',
@@ -92,25 +87,14 @@ const sites = {
     content: '.pf-content',
   },
   'www.bloter.net': {
-    title: 'h1.headline',
+    title: '.headline',
     timeStemp: '.publish',
-    ropoter: '.author--name',
+    repoter: '.author--name',
     content: '.article--content',
-  }
+  },
 }
 
 const site = sites[location.hostname]
-
-const ads = {
-    'www.bloter.net':{
-        content_ad1: '.article--content-ad__container',
-        ad_title: '.denim-shortcode--title',
-        ad_article1: '.bloter-plus--article',
-        ad_article2: '.related-post--article'
-    }
-}
-
-const ad = ads[location.hostname]
 
 const articleInfo = {
   title: document.querySelector(site.title).innerText,
@@ -119,12 +103,6 @@ const articleInfo = {
   content: document.querySelector(site.content).cloneNode(true),
 }
 
-const adInfo = {
-    content_ad1: document.querySelector(ad.content_ad1),
-    ad_title: document.querySelector(ad.ad_title),
-    ad_article1: document.querySelector(ad.ad_article1),
-    ad_article2: document.querySelector(ad.ad_article2)
+if (!isOptOut()) {
+  reconstruct(articleInfo)
 }
-
-reconstruct(articleInfo)
-remove_ad()
