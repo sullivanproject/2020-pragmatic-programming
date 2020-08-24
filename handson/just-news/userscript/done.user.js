@@ -9,7 +9,7 @@
 
 const optOutQueryKey = 'just_news'
 
-function getUrl() {
+function optOutUrl() {
   let query = window.location.search
   if (query) {
     query += `&${optOutQueryKey}=false`
@@ -19,7 +19,7 @@ function getUrl() {
   return window.location.origin + window.location.pathname + query
 }
 
-function reconstruct(articleInfo) {
+function reconstruct(articleInfo, adSelectors) {
   const root = document.createElement('html')
   document.replaceChild(root, document.documentElement)
   root.innerHTML = [
@@ -60,6 +60,15 @@ function reconstruct(articleInfo) {
   const article = root.querySelector('article')
 
   article.append(articleInfo.content)
+
+  for (const adSelector of adSelectors) {
+    const element = article.querySelector(adSelector)
+    if (element === null) {
+      console.error(`${adSelector} is null`)
+      continue
+    }
+    element.remove()
+  }
   article.insertAdjacentHTML(
     'afterbegin',
     `<p>작성자: ${articleInfo.repoter}</p>`
@@ -71,17 +80,8 @@ function reconstruct(articleInfo) {
   article.insertAdjacentHTML('afterbegin', `<h1>${articleInfo.title}</h1>`)
   article.insertAdjacentHTML(
     'afterbegin',
-    `<a href=${getUrl()}>원본 페이지 보기</a>`
+    `<a href=${optOutUrl()}>원본 페이지 보기</a>`
   )
-}
-
-function remove_ad(){
-    content_ad1.parentNode.removeChild(content_ad1)
-    ad_title.forEach(function(item){
-        item.parentNode.removeChild(item)
-    })
-    ad_article1.parentNode.removeChild(ad_article1)
-    ad_article2.parentNode.removeChild(ad_article2)
 }
 
 const sites = {
@@ -92,25 +92,27 @@ const sites = {
     content: '.pf-content',
   },
   'www.bloter.net': {
-    title: 'h1.headline',
+    title: '.headline',
     timeStemp: '.publish',
-    ropoter: '.author--name',
+    repoter: '.author--name',
     content: '.article--content',
-  }
+  },
+}
+
+const sitesAd = {
+  'mediahub.seoul.go.kr': [],
+  'www.bloter.net': [
+    '.article--content-ad__container',
+    '.denim-shortcode--title',
+    '.bloter-plus--article',
+    '.related-post--article',
+    '.goog-te-banner',
+    '#goog-gt-tt',
+  ],
 }
 
 const site = sites[location.hostname]
-
-const ads = {
-    'www.bloter.net':{
-        content_ad1: '.article--content-ad__container',
-        ad_title: '.denim-shortcode--title',
-        ad_article1: '.bloter-plus--article',
-        ad_article2: '.related-post--article'
-    }
-}
-
-const ad = ads[location.hostname]
+const adSelectors = sitesAd[location.hostname]
 
 const articleInfo = {
   title: document.querySelector(site.title).innerText,
@@ -119,12 +121,4 @@ const articleInfo = {
   content: document.querySelector(site.content).cloneNode(true),
 }
 
-const adInfo = {
-    content_ad1: document.querySelector(ad.content_ad1),
-    ad_title: document.querySelector(ad.ad_title),
-    ad_article1: document.querySelector(ad.ad_article1),
-    ad_article2: document.querySelector(ad.ad_article2)
-}
-
-reconstruct(articleInfo)
-remove_ad()
+reconstruct(articleInfo, adSelectors)
