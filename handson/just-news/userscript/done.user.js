@@ -49,7 +49,7 @@ function reconstruct(articleInfo, adSelectors) {
     width: 640px;
     text-align: justify;
     }
-    .time-stemp {
+    .time-stamp {
     color: #888;
     font-size: 10pt;
     text-align: left;
@@ -71,11 +71,11 @@ function reconstruct(articleInfo, adSelectors) {
   }
   article.insertAdjacentHTML(
     'afterbegin',
-    `<p>작성자: ${articleInfo.repoter}</p>`
+    `<p>작성자: ${articleInfo.reporter}</p>`
   )
   article.insertAdjacentHTML(
     'afterbegin',
-    `<p class="time-stemp">작성일: ${articleInfo.timeStemp}</p>`
+    `<p class="time-stamp">작성일: ${articleInfo.timeStamp}</p>`
   )
   article.insertAdjacentHTML('afterbegin', `<h1>${articleInfo.title}</h1>`)
   article.insertAdjacentHTML(
@@ -87,14 +87,14 @@ function reconstruct(articleInfo, adSelectors) {
 const sites = {
   'mediahub.seoul.go.kr': {
     title: '#main > h1',
-    timeStemp: '.date',
-    repoter: '.user',
+    timeStamp: '.date',
+    reporter: '.user',
     content: '.pf-content',
   },
   'www.bloter.net': {
-    title: '.headline',
-    timeStemp: '.publish',
-    repoter: '.author--name',
+    title: 'h1.headline',
+    timeStamp: '.publish',
+    reporter: '.author--name',
     content: '.article--content',
   },
 }
@@ -116,8 +116,8 @@ const adSelectors = sitesAd[location.hostname]
 
 const articleInfo = {
   title: document.querySelector(site.title).innerText,
-  timeStemp: document.querySelector(site.timeStemp).innerText,
-  repoter: document.querySelector(site.repoter).innerText,
+  timeStamp: document.querySelector(site.timeStamp).innerText,
+  reporter: document.querySelector(site.reporter).innerText,
   content: document.querySelector(site.content).cloneNode(true),
 }
 
